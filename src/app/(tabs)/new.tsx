@@ -2,6 +2,8 @@ import { View, Text, Image, TextInput, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as ImagePicker from 'expo-image-picker';
 import Button from '@/src/components/Button';
+import { upload } from 'cloudinary-react-native';
+import { cld } from '@/src/lib/cloudinary';
 
 const AddPost = () => {
   const [caption, setCaption] = useState("");
@@ -27,6 +29,26 @@ const AddPost = () => {
     }
   };
 
+  const uploadImage = async () =>{
+    if(!image){
+      return;
+    }
+
+    const options = {
+      upload_preset: 'Default',
+      unsigned: true,
+  }
+  
+  await upload(cld, {file: image , options: options, callback: (error: any, response: any) => {
+      console.log("error",error);
+      console.log("response",response);
+  }})
+  }
+
+  const createPost = async () => {
+    await uploadImage();
+  }
+
   return (
     <View className='p-3 items-center flex-1 justify-between'>
 
@@ -37,7 +59,7 @@ const AddPost = () => {
       </View>
 
       <View className='w-full'>
-        <Button title="share"/>
+        <Button title="share" onPress={createPost}/>
       </View>
     </View>
   )
