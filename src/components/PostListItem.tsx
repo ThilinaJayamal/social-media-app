@@ -16,7 +16,7 @@ const PostListItem = ({ post }: any) => {
 
   const { width } = useWindowDimensions();
   const myImage = cld.image(post.image);
-  console.log(myImage.toURL());
+
   myImage.resize(thumbnail().width(width).height(width));
 
   // myImage
