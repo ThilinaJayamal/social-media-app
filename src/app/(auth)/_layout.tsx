@@ -11,7 +11,9 @@ const AuthLayout = () => {
         )
     }
     return (
-        <Stack />
+        <Stack>
+            <Stack.Screen name='index' options={{title:"Welcome Back!",headerTitleAlign:'center'}}/>
+        </Stack>
     )
 }
 

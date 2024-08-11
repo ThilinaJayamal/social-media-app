@@ -5,8 +5,14 @@ import Button from '@/src/components/Button';
 import { upload } from 'cloudinary-react-native';
 import { cld, uploadImage } from '@/src/lib/cloudinary';
 import { UploadApiResponse } from 'cloudinary-react-native/lib/typescript/src/api/upload/model/params/upload-params';
+import { supabase } from '@/src/lib/supabase';
+import { useAuth } from '@/src/providers/AuthProvider';
+import { router } from 'expo-router';
 
 const AddPost = () => {
+
+  const { session } = useAuth();
+
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState<undefined | string>(undefined);
 
@@ -30,13 +36,25 @@ const AddPost = () => {
     }
   };
 
- 
+
   const createPost = async () => {
-    if(!image){
+    if (!image) {
       return
     }
     const resopnse = await uploadImage(image);
     console.log(resopnse?.public_id);
+
+    const { data, error } = await supabase
+      .from('posts')
+      .insert([
+        {
+          caption: caption,
+          image: resopnse.public_id,
+          user_id: session?.user.id
+        },
+      ])
+      .select()
+    router.push("/(tabs)")
   }
 
   return (
