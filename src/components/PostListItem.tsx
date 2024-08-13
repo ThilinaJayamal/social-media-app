@@ -24,7 +24,7 @@ const PostListItem = ({ post }: any) => {
   // .roundCorners(byRadius(100)); 
 
   const avatar = cld.image(post.user.avatar_url);
-  avatar.resize(thumbnail().width(48).height(48));
+  avatar.resize(thumbnail().width(100).height(100));
   //<AdvancedImage cldImg={myImage} className='w-full aspect-square'/>
 
   return (

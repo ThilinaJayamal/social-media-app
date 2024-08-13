@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Button from '@/src/components/Button';
 import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/src/providers/AuthProvider';
-import { cld } from '@/src/lib/cloudinary';
+import { cld, uploadImage } from '@/src/lib/cloudinary';
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 
 const ProfileScreen = () => {
@@ -13,7 +13,7 @@ const ProfileScreen = () => {
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('')
   const [website, setWebsite] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('user-profile')
 
   const { session } = useAuth();
 
@@ -42,7 +42,6 @@ const ProfileScreen = () => {
         setUsername(data.username)
         setWebsite(data.website)
         setAvatarUrl(data.avatar_url)
-        //console.log(data.avatar_url)
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -68,21 +67,63 @@ const ProfileScreen = () => {
     }
   };
 
-  const myImage = cld.image(avatarUrl).resize(thumbnail().width(208).height(208));
+
+  async function updateProfile({
+    username,
+    website,
+    avatar_url,
+  }: {
+    username: string
+    website: string
+    avatar_url: string
+  }) {
+    try {
+      setLoading(true)
+      if (!session?.user) throw new Error('No user on the session!')
+
+      const resopnse = await uploadImage(image); 
+      
+      const updates = {
+        id: session?.user.id,
+        username,
+        website,
+        avatar_url:resopnse?.public_id,
+        updated_at: new Date(),
+      }
+
+      const { error } = await supabase.from('profiles').upsert(updates)
+
+      if (error) {
+        throw error
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const myImage = cld.image(avatarUrl).resize(thumbnail().width(250).height(250));
 
   return (
     <View className='p-3 flex-1 justify-between'>
 
       <View>
-        <Image source={{ uri: myImage.toURL() }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />
+        {
+          image ? <Image source={{ uri: image }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> :
+            <Image source={{ uri: myImage.toURL() }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />
+        }
+
         <Text className='text-blue-500 font-semibold m-5 self-center' onPress={pickImage}>Change</Text>
 
         <Text className='font-semibold text-gray-500 mb-2'>Username</Text>
-        <TextInput placeholder="Username" value={username} className='border border-gray-300 p-3 rounded-md' />
+        <TextInput placeholder="Username" value={username} onChangeText={(user)=>setUsername(user)} className='border border-gray-300 p-3 rounded-md' />
       </View>
 
       <View className='w-full gap-2'>
-        <Button title="Update profile" />
+        <Button title="Update profile" onPress={()=>updateProfile({username:username,website:website,avatar_url:avatarUrl})}/>
         <Button title="Sign out" onPress={() => supabase.auth.signOut()} />
       </View>
 
