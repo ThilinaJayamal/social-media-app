@@ -16,11 +16,12 @@ const ProfileScreen = () => {
   const [avatarUrl, setAvatarUrl] = useState('user-profile')
 
   const { session } = useAuth();
-
+//test
   useEffect(() => {
 
     if (session) {
       getProfile();
+      
     }
   }, [session]);
 
