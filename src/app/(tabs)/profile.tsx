@@ -42,6 +42,7 @@ const ProfileScreen = () => {
 
     setUsername(data.username);
     setBio(data?.bio);
+    setAvatarUrl(data.avatar_url);
   }
 
 
@@ -49,11 +50,21 @@ const ProfileScreen = () => {
     if (!user) {
       return;
     }
-    const { data, error } = await supabase.from('profiles').upsert({
+
+    const updatedProfile = {
       id: user?.id,
       username: username,
-      bio,
-    })
+      bio: bio,
+      avatar_url: avatarUrl
+    }
+
+    if (image) {
+      const response = await uploadImage(image);
+      console.log(response.public_id);
+      updatedProfile.avatar_url = response.public_id;
+    }
+
+    const { data, error } = await supabase.from('profiles').upsert(updatedProfile);
 
     if (error) {
       Alert.alert("Faild to update profile" + error);
@@ -74,6 +85,8 @@ const ProfileScreen = () => {
     }
   };
 
+  const avatar = cld.image(avatarUrl);
+  avatar.resize(thumbnail().width(250).height(250));
 
   return (
     <ScrollView>
@@ -82,7 +95,7 @@ const ProfileScreen = () => {
         <View>
           {
             image ? <Image source={{ uri: image }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> :
-              <Image source={{}} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />
+              (avatarUrl ? <Image source={{uri:avatar.toURL()}} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> : <View className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />)
           }
 
           <Text className='text-blue-500 font-semibold m-5 self-center' onPress={pickImage}>Change</Text>
