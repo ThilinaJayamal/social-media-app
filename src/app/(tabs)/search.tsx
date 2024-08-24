@@ -8,6 +8,13 @@ import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { cld } from '@/src/lib/cloudinary';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+export const ImageUrlGenerator = (item: string,size:number) => {
+    const avatar = cld.image(item || 'user-profile');
+    avatar.resize(thumbnail().width(size).height(size));
+
+    return avatar.toURL();
+}
+
 const search = () => {
 
     const [searchName, setSerchName] = useState("");
@@ -25,13 +32,6 @@ const search = () => {
             Alert.alert("Something went wrong");
         }
         setResult(data);
-    }
-
-    const imageUrlGenerator = (item: string) => {
-        const avatar = cld.image(item || 'user-profile');
-        avatar.resize(thumbnail().width(100).height(100));
-
-        return avatar.toURL();
     }
 
     return (
@@ -71,7 +71,7 @@ const search = () => {
                     <View key={item} className='p-5'>
                         <View className='flex-row gap-3 items-center'>
 
-                            <Image source={{ uri: imageUrlGenerator(item?.avatar_url) }} className='w-14 h-14 rounded-full' />
+                            <Image source={{ uri: ImageUrlGenerator(item?.avatar_url,100) }} className='w-14 h-14 rounded-full' />
 
                             <View>
                                 <Text className='font-semibold text-gray-500'>{item?.full_name}</Text>
