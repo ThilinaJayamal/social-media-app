@@ -1,39 +1,31 @@
-import { View, Text, Image, useWindowDimensions } from 'react-native'
+import { View, Text, Image, useWindowDimensions, Pressable } from 'react-native'
 import React from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
-import { AdvancedImage } from 'cloudinary-react-native';
 import { cld } from '../lib/cloudinary';
-
-// Import required actions and qualifiers.
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
-import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
-import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
-import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { router } from 'expo-router';
 
 const PostListItem = ({ post }: any) => {
 
   const { width } = useWindowDimensions();
   const myImage = cld.image(post.image);
 
-  myImage.resize(thumbnail().width(width).height(width));
-
-  // myImage
-  //.resize(thumbnail().width(150).height(150).gravity(focusOn(FocusOn.face())))  // Crop the image, focusing on the face.
-  // .roundCorners(byRadius(100)); 
+  myImage.resize(thumbnail().width(width).height(width)); 
 
   const avatar = cld.image(post.user.avatar_url || 'user-profile');
   avatar.resize(thumbnail().width(100).height(100));
-  //<AdvancedImage cldImg={myImage} className='w-full aspect-square'/>
 
   return (
     <View className='bg-white'>
 
-      <View className='p-2 flex-row items-center gap-2'>
-        <Image source={{ uri: avatar.toURL() }} className='w-12 aspect-square rounded-full' />
-        <Text className='font-semibold'>{post.user.username || "New User"}</Text>
-      </View>
+      <Pressable onPress={()=>router.push(`/profiles/${post.user.id}`)}>
+        <View className='p-2 flex-row items-center gap-2'>
+          <Image source={{ uri: avatar.toURL() }} className='w-12 aspect-square rounded-full' />
+          <Text className='font-semibold'>{post.user.username || "New User"}</Text>
+        </View>
+      </Pressable>
 
       <Image source={{ uri: myImage.toURL() }} className='w-full aspect-square' />
 
@@ -44,7 +36,7 @@ const PostListItem = ({ post }: any) => {
           <Feather name="send" size={24} color="black" />
         </View>
 
-        <Feather name="bookmark" size={24} color="black"/>
+        <Feather name="bookmark" size={24} color="black" />
       </View>
 
     </View>
