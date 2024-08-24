@@ -2,9 +2,7 @@ import { View, Text, Image, TextInput, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as ImagePicker from 'expo-image-picker';
 import Button from '@/src/components/Button';
-import { upload } from 'cloudinary-react-native';
-import { cld, uploadImage } from '@/src/lib/cloudinary';
-import { UploadApiResponse } from 'cloudinary-react-native/lib/typescript/src/api/upload/model/params/upload-params';
+import { uploadImage } from '@/src/lib/cloudinary';
 import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { router } from 'expo-router';
@@ -25,7 +23,7 @@ const AddPost = () => {
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [3, 4],
       quality: 1,

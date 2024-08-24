@@ -12,7 +12,8 @@ const AuthLayout = () => {
     }
     return (
         <Stack>
-            <Stack.Screen name='index' options={{title:"Welcome Back!",headerTitleAlign:'center'}}/>
+            <Stack.Screen name='index' options={{title:"Welcome Back!",headerTitleAlign:'center',headerShown:false}}/>
+            <Stack.Screen name="signup" options={{title:"Create a new account",headerTitleAlign:'center'}}/>
         </Stack>
     )
 }

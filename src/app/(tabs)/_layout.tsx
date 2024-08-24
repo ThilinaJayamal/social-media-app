@@ -1,19 +1,22 @@
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React from 'react'
-import { Redirect, Tabs } from 'expo-router'
+import { Redirect, router, Tabs } from 'expo-router'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAuth } from '@/src/providers/AuthProvider';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 
 const TabLayout = () => {
-  const {isAuthenticated} = useAuth();
-  
-  if(!isAuthenticated){
-      return <Redirect href={"/(auth)"}/>
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Redirect href={"/(auth)"} />
   }
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'black' ,tabBarShowLabel:false}}>
+    <Tabs screenOptions={{
+      tabBarActiveTintColor: 'black', tabBarShowLabel: false,
+    }}>
 
       <Tabs.Screen name="index" options={{
         headerTitle: 'For you', headerTitleAlign: "center",
@@ -29,6 +32,8 @@ const TabLayout = () => {
         headerTitle: 'Profile', headerTitleAlign: "center",
         tabBarIcon: ({ color }) => <FontAwesome name="user" size={26} color={color} />
       }} />
+
+      <Tabs.Screen name='search' options={{href:null, headerTitleAlign:'center',headerTitle:'Search'}}/>
     </Tabs>
   )
 }

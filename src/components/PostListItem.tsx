@@ -44,7 +44,7 @@ const PostListItem = ({ post }: any) => {
           <Feather name="send" size={24} color="black" />
         </View>
 
-        <Feather name="bookmark" size={24} color="black" className='ml-auto' />
+        <Feather name="bookmark" size={24} color="black"/>
       </View>
 
     </View>
