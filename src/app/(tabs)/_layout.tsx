@@ -20,12 +20,6 @@ const TabLayout = () => {
 
       <Tabs.Screen name="index" options={{
         headerTitle: 'For you', headerTitleAlign: "center",
-        headerStyle:{
-          backgroundColor:'#fff',
-        },
-        headerTitleStyle:{
-          color:'#000',
-        },
         tabBarIcon: ({ color }) => <FontAwesome name="home" size={26} color={color} />
       }} />
 
@@ -35,7 +29,7 @@ const TabLayout = () => {
       }} />
 
       <Tabs.Screen name="profile" options={{
-        headerTitle: 'Profile', headerTitleAlign: "center",
+        headerTitle: 'Update Profile', headerTitleAlign: "center",
         tabBarIcon: ({ color }) => <FontAwesome name="user" size={26} color={color} />
       }} />
 
