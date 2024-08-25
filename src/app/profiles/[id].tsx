@@ -1,6 +1,6 @@
 import { View, Text, Alert, Image, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Link, useLocalSearchParams } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/src/lib/supabase';
 import { ImageUrlGenerator } from '../(tabs)/search';
@@ -107,21 +107,15 @@ const UserProfile = () => {
                                 (user?.id.toString() === id.toString()) ?
                                     <View className='mt-4 flex-row gap-5'>
                                         <View className='w-1/3'>
-                                            <Link href={"/(tabs)/profile"} asChild>
-                                                <Button title='Edit Profile' />
-                                            </Link>
+                                            <Button title='Edit Profile' onPress={() => router.push("/(tabs)/profile")} />
                                         </View>
                                         <View className='w-1/3'>
-                                            <Link href={"/(tabs)/new"} asChild>
-                                                <Button title='+ ADD' />
-                                            </Link>
+                                            <Button title='+ ADD' onPress={() => router.push("/(tabs)/new")} />
                                         </View>
                                     </View>
                                     :
                                     <View className='mt-4 w-2/4'>
-                                        <Link href={"/(tabs)/new"} asChild>
-                                            <Button title='Follow' />
-                                        </Link>
+                                        <Button title='Follow' onPress={() => router.push("/(tabs)/new")} />
                                     </View>
                             }
 

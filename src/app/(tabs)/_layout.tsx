@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, StatusBar } from 'react-native'
 import React from 'react'
 import { Redirect, router, Tabs } from 'expo-router'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -20,6 +20,12 @@ const TabLayout = () => {
 
       <Tabs.Screen name="index" options={{
         headerTitle: 'For you', headerTitleAlign: "center",
+        headerStyle:{
+          backgroundColor:'#fff',
+        },
+        headerTitleStyle:{
+          color:'#000',
+        },
         tabBarIcon: ({ color }) => <FontAwesome name="home" size={26} color={color} />
       }} />
 

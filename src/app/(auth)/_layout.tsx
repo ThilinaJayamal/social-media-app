@@ -7,7 +7,7 @@ const AuthLayout = () => {
     const { isAuthenticated } = useAuth();
     if (isAuthenticated) {
         return (
-            <Redirect href={"/(tabs)/search"} />
+            <Redirect href={"/(tabs)/"} />
         )
     }
     return (
