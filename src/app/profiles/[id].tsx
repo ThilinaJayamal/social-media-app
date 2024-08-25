@@ -1,7 +1,6 @@
 import { View, Text, Alert, Image, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Link, router, useLocalSearchParams } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router, useLocalSearchParams } from 'expo-router'
 import { supabase } from '@/src/lib/supabase';
 import { ImageUrlGenerator } from '../(tabs)/search';
 import { useAuth } from '@/src/providers/AuthProvider';
@@ -52,6 +51,7 @@ const UserProfile = () => {
         if (error) {
             Alert.alert("Something went wrong");
         }
+        data?.sort((a, b) => b.id - a.id);
         setPosts(data);
     }
 
@@ -62,7 +62,7 @@ const UserProfile = () => {
 
 
     return (
-        <SafeAreaView>
+        <View>
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={posts} renderItem={({ item }) => (
@@ -124,7 +124,7 @@ const UserProfile = () => {
 
                 } />
 
-        </SafeAreaView>
+        </View>
     )
 }
 
