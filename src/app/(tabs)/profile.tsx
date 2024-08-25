@@ -7,6 +7,7 @@ import { useAuth } from '@/src/providers/AuthProvider';
 import { cld, uploadImage } from '@/src/lib/cloudinary';
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import CustomTextInput from '@/src/components/CustomTextInput';
+import { router } from 'expo-router';
 
 const ProfileScreen = () => {
 
@@ -95,7 +96,7 @@ const ProfileScreen = () => {
         <View>
           {
             image ? <Image source={{ uri: image }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> :
-              (avatarUrl ? <Image source={{uri:avatar.toURL()}} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> : <View className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />)
+              (avatarUrl ? <Image source={{ uri: avatar.toURL() }} className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' /> : <View className='w-52 aspect-[1] rounded-full bg-slate-300 self-center' />)
           }
 
           <Text className='text-blue-500 font-semibold m-5 self-center' onPress={pickImage}>Change</Text>
@@ -110,7 +111,8 @@ const ProfileScreen = () => {
 
         </View>
 
-        <View className='w-full gap-2'>
+        <View className='w-full gap-2 mt-8'>
+          <Button title="View profile" onPress={() => router.push(`/profiles/${user?.id}`)} />
           <Button title="Update profile" onPress={updateProfile} />
           <Button title="Sign out" onPress={() => supabase.auth.signOut()} />
         </View>

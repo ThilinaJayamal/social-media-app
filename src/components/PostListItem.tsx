@@ -1,13 +1,55 @@
 import { View, Text, Image, useWindowDimensions, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
-import { cld } from '../lib/cloudinary';
+import { cld, uploadImage } from '../lib/cloudinary';
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { router } from 'expo-router';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../providers/AuthProvider';
+
 
 const PostListItem = ({ post }: any) => {
+
+  const { user } = useAuth();
+  const [like, setLike] = useState(false);
+
+  const getLikesData = async () => {
+    let { data, error } = await supabase.from('likes').select('*')
+      .match({ user_id: user?.id, post_id: post.id });
+    if (error) {
+      console.log("Something went wrong");
+    }
+    console.log(data);
+    
+  }
+
+  useEffect(()=>{
+    getLikesData();
+  },[])
+
+
+  const handleLikeBtn = async () => {
+    const { data, error } = await supabase
+      .from('likes')
+      .insert([
+        {
+          user_id: user?.id,
+          post_id: post?.id
+        },
+      ])
+      .select()
+    setLike((prev) => !prev);
+
+    if (error) {
+      console.log(error);
+    }
+  }
+
+  const createPost = async () => {
+
+  }
 
   const { width } = useWindowDimensions();
   const myImage = cld.image(post.image);
@@ -40,7 +82,7 @@ const PostListItem = ({ post }: any) => {
 
       <View className='flex-row justify-between p-3'>
         <View className='flex-row gap-3'>
-          <AntDesign name="hearto" size={24} color="black" />
+          <AntDesign name={like ? "heart" : "hearto"} size={24} color={like ? "red" : "black"} onPress={handleLikeBtn} />
           <Ionicons name="chatbubble-outline" size={24} color="black" />
           <Feather name="send" size={24} color="black" />
         </View>
