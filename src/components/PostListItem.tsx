@@ -1,13 +1,81 @@
 import { View, Text, Image, useWindowDimensions, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { cld } from '../lib/cloudinary';
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { router } from 'expo-router';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../providers/AuthProvider';
+
+type typeLikeRecord = {
+  id:number
+}
 
 const PostListItem = ({ post }: any) => {
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeRecord,setLikeRecord] = useState<null | typeLikeRecord>(null);
+  const { user } = useAuth();
+
+  useEffect(()=>{
+    if(isLiked){
+      //saveLikes();
+    }
+    else{
+      removeLikes();
+    }
+  },[isLiked])
+
+  useEffect(()=>{
+    fetchLikes();
+  },[])
+
+  const saveLikes = async () => {
+
+    const { data, error } = await supabase
+      .from('likes')
+      .insert([
+        { user_id: user?.id, post_id: post.id },
+      ])
+      .select()
+
+      if(!data){
+        return
+      }
+
+      setLikeRecord(data[0]);
+  }
+
+  const removeLikes = async () => {
+    if(likeRecord){
+      const {error} = await supabase
+      .from('likes') 
+      .delete()
+      .eq('id',likeRecord.id);
+
+      if(!error){
+        setLikeRecord(null);
+      }
+    }
+  }
+
+  const fetchLikes = async () =>{
+    const { data, error } = await supabase
+    .from('likes')
+    .select('*')
+    .eq('user_id',user?.id)
+    .eq('post_id',post.id)
+    .select();
+
+    if(data && data?.length>0){
+      setLikeRecord(data[0]);
+      setIsLiked(true);
+    }
+    console.log(data);
+
+  }
 
   const { width } = useWindowDimensions();
   const myImage = cld.image(post.image);
@@ -36,12 +104,17 @@ const PostListItem = ({ post }: any) => {
         )
       }
 
-      <Image source={{ uri: myImage.toURL() }} className='w-full aspect-square' />
+      <Pressable onPress={() => { }}>
+        <Image source={{ uri: myImage.toURL() }} className='w-full aspect-square' />
+      </Pressable>
 
       <View className='flex-row justify-between p-3'>
         <View className='flex-row gap-3'>
-          <AntDesign name="hearto" size={24} color="black" />
-          <Ionicons name="chatbubble-outline" size={24} color="black" />
+          <AntDesign name={isLiked ? "heart" : "hearto"}
+            size={24} color={isLiked ? "red" : "black"}
+            onPress={() => setIsLiked(!isLiked)} />
+          <Ionicons name="chatbubble-outline"
+            size={24} color="black" />
           <Feather name="send" size={24} color="black" />
         </View>
 
