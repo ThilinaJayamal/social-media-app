@@ -20,6 +20,7 @@ const PostListItem = ({ post }: any) => {
   const { user } = useAuth();
 
   useEffect(() => {
+  
     if (post.my_likes.length > 0) {
       setLikeRecord(post.my_likes[0]);
       setIsLiked(true);
@@ -106,7 +107,7 @@ const PostListItem = ({ post }: any) => {
       </View>
 
       <View className='px-3 pb-2'>
-        <Text className='font-semibold'>58 likes</Text>
+        <Text className='font-semibold'>{post.likes[0].count+" "}likes</Text>
       </View>
 
     </View>
