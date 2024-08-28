@@ -10,72 +10,56 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 
 type typeLikeRecord = {
-  id:number
+  id: number
 }
 
 const PostListItem = ({ post }: any) => {
 
   const [isLiked, setIsLiked] = useState(false);
-  const [likeRecord,setLikeRecord] = useState<null | typeLikeRecord>(null);
+  const [likeRecord, setLikeRecord] = useState<null | typeLikeRecord>(null);
   const { user } = useAuth();
 
-  useEffect(()=>{
-    if(isLiked){
-      //saveLikes();
+  useEffect(() => {
+    if (post.my_likes.length > 0) {
+      setLikeRecord(post.my_likes[0]);
+      setIsLiked(true);
     }
-    else{
-      removeLikes();
+  }, [post.my_likes]);
+
+  useEffect(() => {
+    if (isLiked) {
+      saveLike();
+    } else {
+      deleteLike();
     }
-  },[isLiked])
+  }, [isLiked]);
 
-  useEffect(()=>{
-    fetchLikes();
-  },[])
-
-  const saveLikes = async () => {
-
-    const { data, error } = await supabase
+  const saveLike = async () => {
+    if (likeRecord) {
+      return;
+    }
+    const { data } = await supabase
       .from('likes')
-      .insert([
-        { user_id: user?.id, post_id: post.id },
-      ])
-      .select()
-
-      if(!data){
-        return
-      }
-
+      .insert([{ user_id: user?.id, post_id: post.id }])
+      .select();
+    if (data) {
       setLikeRecord(data[0]);
-  }
+    }
 
-  const removeLikes = async () => {
-    if(likeRecord){
-      const {error} = await supabase
-      .from('likes') 
-      .delete()
-      .eq('id',likeRecord.id);
+  };
 
-      if(!error){
+  const deleteLike = async () => {
+    if (likeRecord) {
+      const { error } = await supabase
+        .from('likes')
+        .delete()
+        .eq('id', likeRecord.id);
+      if (!error) {
         setLikeRecord(null);
       }
     }
-  }
+  };
 
-  const fetchLikes = async () =>{
-    const { data, error } = await supabase
-    .from('likes')
-    .select('*')
-    .eq('user_id',user?.id)
-    .eq('post_id',post.id)
-    .select();
-
-    if(data && data?.length>0){
-      setLikeRecord(data[0]);
-      setIsLiked(true);
-    }
-    console.log(data);
-
-  }
 
   const { width } = useWindowDimensions();
   const myImage = cld.image(post.image);
@@ -108,7 +92,7 @@ const PostListItem = ({ post }: any) => {
         <Image source={{ uri: myImage.toURL() }} className='w-full aspect-square' />
       </Pressable>
 
-      <View className='flex-row justify-between p-3'>
+      <View className='flex-row justify-between px-3 py-2'>
         <View className='flex-row gap-3'>
           <AntDesign name={isLiked ? "heart" : "hearto"}
             size={24} color={isLiked ? "red" : "black"}
@@ -119,6 +103,10 @@ const PostListItem = ({ post }: any) => {
         </View>
 
         <Feather name="bookmark" size={24} color="black" />
+      </View>
+
+      <View className='px-3 pb-2'>
+        <Text className='font-semibold'>58 likes</Text>
       </View>
 
     </View>

@@ -12,7 +12,7 @@ const FeedScreen = () => {
   }, [])
 
   const fetchPosts = async () => {
-    let { data, error } = await supabase.from('posts').select('* , user:profiles(*)');
+    let { data, error } = await supabase.from('posts').select('* , user:profiles(*),my_likes:likes(*)');
     if (error) {
       Alert.alert("Something went wrong");
     }
