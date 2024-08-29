@@ -8,6 +8,7 @@ import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { router } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
+import { sendLikeNotification } from '../utils/Notification';
 
 type typeLikeRecord = {
   id: number
@@ -45,6 +46,7 @@ const PostListItem = ({ post }: any) => {
       .select();
     if (data) {
       setLikeRecord(data[0]);
+      sendLikeNotification(data[0]);
     }
 
   };
