@@ -27,7 +27,7 @@ const UserProfile = () => {
         const { data, error } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', id.toString())
+            .eq('id', id)
             .single();
 
         if (error) {
@@ -45,12 +45,13 @@ const UserProfile = () => {
 
         let { data, error } = await supabase
             .from('posts')
-            .select('* , user:profiles(*)')
+            .select('* , user:profiles(*),my_likes:likes(*), likes(count)')
             .eq("user_id", id);
-        //select * from profiles as user.
+
         if (error) {
             Alert.alert("Something went wrong");
         }
+        console.log(data);
         data?.sort((a, b) => b.id - a.id);
         setPosts(data);
     }

@@ -75,10 +75,10 @@ const NotificationProvider = ({ children }: PropsWithChildren) => {
   const responseListener = useRef<Notifications.Subscription>();
 
   notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    Alert.alert(
+    /*Alert.alert(
       notification.request.content.title || "Notification",
       notification.request.content.body || "Subtitle"
-    );
+    );*/
   });
 
   const { user } = useAuth();
